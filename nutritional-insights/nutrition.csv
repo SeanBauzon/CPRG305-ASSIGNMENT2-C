@@ -1,0 +1,201 @@
+food_name,diet_type,protein,carbs,fat,fiber,calories
+Quinoa Salad,Vegan,19.6,45.8,11.3,19.5,397.3
+Lentil Soup,Vegan,20.2,71.8,9.0,23.4,256.0
+Chickpea Curry,Vegan,13.3,60.2,8.3,19.0,380.0
+Tofu Stir Fry,Vegan,18.2,51.6,15.1,31.2,251.3
+Black Bean Tacos,Vegan,22.1,65.9,12.1,18.1,441.4
+Avocado Toast,Vegan,15.0,47.8,9.2,31.9,370.7
+Veggie Burger,Vegan,22.1,66.9,14.4,34.5,325.7
+Sweet Potato Bowl,Vegan,18.3,69.9,15.4,32.2,365.5
+Tempeh Bowl,Vegan,20.6,46.4,10.7,20.8,266.0
+Mushroom Risotto,Vegan,13.5,48.0,11.3,27.7,323.0
+Falafel Wrap,Vegan,15.6,51.3,11.2,33.7,379.6
+Edamame Salad,Vegan,19.1,50.1,16.7,18.3,325.9
+Mango Smoothie,Vegan,24.8,64.2,14.7,28.7,418.6
+Chia Pudding,Vegan,21.6,51.9,8.4,21.3,303.5
+Oat Bowl,Vegan,13.2,73.3,18.5,21.3,381.1
+Quinoa Salad #2,Vegan,15.9,72.4,13.5,20.3,299.3
+Lentil Soup #2,Vegan,18.4,52.9,15.0,33.0,329.9
+Chickpea Curry #2,Vegan,13.3,74.9,14.1,16.8,259.4
+Tofu Stir Fry #2,Vegan,11.6,63.8,17.5,23.4,262.7
+Black Bean Tacos #2,Vegan,15.7,74.9,14.3,34.4,422.2
+Avocado Toast #2,Vegan,10.2,66.6,16.2,25.7,303.4
+Veggie Burger #2,Vegan,19.6,48.3,13.2,24.1,440.8
+Sweet Potato Bowl #2,Vegan,23.1,52.9,14.0,18.6,432.5
+Tempeh Bowl #2,Vegan,23.1,54.0,15.7,27.2,280.6
+Mushroom Risotto #2,Vegan,21.4,61.2,17.3,25.6,250.1
+Falafel Wrap #2,Vegan,14.9,45.6,19.1,32.6,416.3
+Edamame Salad #2,Vegan,14.6,46.7,18.5,33.9,267.1
+Mango Smoothie #2,Vegan,17.3,47.1,17.1,30.3,275.7
+Chia Pudding #2,Vegan,17.1,61.5,11.2,32.4,334.6
+Oat Bowl #2,Vegan,13.2,61.2,16.8,19.0,312.3
+Quinoa Salad #3,Vegan,24.9,64.5,13.3,25.4,274.2
+Lentil Soup #3,Vegan,13.4,55.1,15.1,19.6,294.0
+Chickpea Curry #3,Vegan,11.1,63.9,10.7,33.1,421.9
+Tofu Stir Fry #3,Vegan,11.1,52.1,16.0,19.3,276.5
+Black Bean Tacos #3,Vegan,24.0,62.1,13.7,30.7,411.5
+Avocado Toast #3,Vegan,12.9,47.9,13.2,23.5,343.4
+Veggie Burger #3,Vegan,20.9,65.2,19.8,17.0,330.5
+Sweet Potato Bowl #3,Vegan,15.1,70.9,11.0,18.8,339.7
+Tempeh Bowl #3,Vegan,16.3,53.4,11.0,33.5,338.6
+Mushroom Risotto #3,Vegan,22.9,61.5,8.6,35.0,417.2
+Bacon & Eggs,Keto,44.4,9.4,65.5,4.5,497.1
+Salmon Avocado,Keto,29.3,5.2,41.8,6.4,597.1
+Keto Burger,Keto,30.3,8.3,53.7,6.8,591.5
+Cheese Omelette,Keto,44.9,6.4,61.6,4.4,459.3
+Pork Rinds,Keto,44.4,6.6,56.3,9.7,411.4
+Cream Cheese Fat Bomb,Keto,36.7,6.0,65.6,4.4,592.2
+Butter Steak,Keto,26.6,3.5,57.9,9.1,447.0
+Cauliflower Mash,Keto,27.4,9.1,47.4,8.4,523.9
+Zucchini Noodles,Keto,33.4,6.7,55.7,11.4,440.9
+Almond Flour Pancake,Keto,39.3,3.9,51.9,9.0,460.0
+Keto Salad,Keto,31.3,8.0,42.2,7.1,599.7
+Bacon Wrapped Chicken,Keto,44.9,2.6,46.4,5.4,586.7
+Deviled Eggs,Keto,42.6,9.0,51.1,4.4,566.7
+Cheese Crisps,Keto,39.1,6.9,69.6,8.9,401.6
+Macadamia Nuts,Keto,41.3,4.4,59.9,11.5,426.9
+Bacon & Eggs #2,Keto,27.3,2.9,56.6,5.5,521.0
+Salmon Avocado #2,Keto,39.4,3.6,59.0,5.4,497.7
+Keto Burger #2,Keto,43.1,8.8,42.8,6.8,455.3
+Cheese Omelette #2,Keto,25.1,8.2,59.1,5.4,548.2
+Pork Rinds #2,Keto,36.0,5.4,40.3,3.7,576.6
+Cream Cheese Fat Bomb #2,Keto,43.1,6.4,65.0,8.2,429.6
+Butter Steak #2,Keto,27.5,4.5,67.0,10.2,572.1
+Cauliflower Mash #2,Keto,43.0,3.7,47.5,3.9,556.0
+Zucchini Noodles #2,Keto,42.7,5.3,58.6,4.4,586.0
+Almond Flour Pancake #2,Keto,42.3,9.8,64.3,10.9,405.0
+Keto Salad #2,Keto,39.7,4.7,67.9,10.2,572.8
+Bacon Wrapped Chicken #2,Keto,41.2,4.1,63.6,4.0,574.4
+Deviled Eggs #2,Keto,42.2,3.8,64.5,7.1,461.0
+Cheese Crisps #2,Keto,40.9,3.8,40.7,4.7,465.7
+Macadamia Nuts #2,Keto,42.3,9.7,48.4,8.8,479.9
+Bacon & Eggs #3,Keto,44.6,6.3,68.2,4.0,594.1
+Salmon Avocado #3,Keto,28.6,9.7,48.0,4.0,486.9
+Keto Burger #3,Keto,39.6,4.5,58.2,7.6,477.0
+Cheese Omelette #3,Keto,36.5,4.0,61.3,3.0,585.1
+Pork Rinds #3,Keto,35.8,7.8,62.3,9.0,472.8
+Cream Cheese Fat Bomb #3,Keto,26.4,7.3,49.9,5.8,569.6
+Butter Steak #3,Keto,39.4,4.4,49.3,6.7,480.5
+Cauliflower Mash #3,Keto,30.9,3.0,52.6,11.5,535.5
+Zucchini Noodles #3,Keto,43.1,6.9,49.0,7.9,400.1
+Almond Flour Pancake #3,Keto,30.7,5.4,57.4,8.9,493.0
+Greek Salad,Mediterranean,25.5,35.3,24.5,23.5,459.2
+Grilled Fish,Mediterranean,20.9,32.1,25.3,19.5,367.0
+Hummus Platter,Mediterranean,31.9,48.8,28.5,13.4,339.8
+Olive Tapenade,Mediterranean,18.4,36.1,24.5,22.7,314.6
+Tabbouleh,Mediterranean,25.0,45.7,18.9,20.4,398.9
+Grilled Chicken,Mediterranean,22.1,46.4,15.1,21.3,454.0
+Stuffed Peppers,Mediterranean,19.8,40.6,18.5,24.4,403.6
+Shrimp Skewers,Mediterranean,18.9,36.2,32.0,16.8,460.3
+Tzatziki Bowl,Mediterranean,29.3,54.7,26.9,24.3,478.3
+Lamb Kebab,Mediterranean,28.4,48.0,25.1,22.5,409.6
+Pita Wrap,Mediterranean,33.3,48.6,24.5,13.9,349.4
+Spinach Pie,Mediterranean,28.8,49.1,25.4,19.4,354.9
+Baked Cod,Mediterranean,19.3,37.1,20.4,14.8,408.0
+Tomato Soup,Mediterranean,20.4,35.8,28.9,20.6,312.8
+Feta Omelette,Mediterranean,24.9,43.6,23.3,13.1,384.0
+Greek Salad #2,Mediterranean,33.4,44.6,28.9,22.9,453.1
+Grilled Fish #2,Mediterranean,24.5,30.1,22.0,21.3,470.7
+Hummus Platter #2,Mediterranean,34.2,40.5,30.0,18.2,420.7
+Olive Tapenade #2,Mediterranean,21.7,35.5,23.7,10.4,367.2
+Tabbouleh #2,Mediterranean,29.5,40.1,18.3,17.0,325.5
+Grilled Chicken #2,Mediterranean,28.6,30.7,22.9,18.5,305.4
+Stuffed Peppers #2,Mediterranean,28.9,33.4,24.2,10.8,375.8
+Shrimp Skewers #2,Mediterranean,21.6,38.2,30.2,15.7,450.4
+Tzatziki Bowl #2,Mediterranean,32.1,36.3,16.6,10.3,407.9
+Lamb Kebab #2,Mediterranean,35.0,38.7,28.0,21.7,430.4
+Pita Wrap #2,Mediterranean,30.8,53.7,19.0,10.3,330.5
+Spinach Pie #2,Mediterranean,20.1,46.7,26.3,13.3,439.9
+Baked Cod #2,Mediterranean,31.0,34.2,27.1,21.2,322.9
+Tomato Soup #2,Mediterranean,31.9,54.1,17.2,10.4,362.4
+Feta Omelette #2,Mediterranean,29.5,54.0,22.9,20.7,315.2
+Greek Salad #3,Mediterranean,29.7,45.7,17.0,21.6,470.1
+Grilled Fish #3,Mediterranean,28.2,33.0,34.7,21.7,369.4
+Hummus Platter #3,Mediterranean,25.3,39.3,25.1,15.1,469.9
+Olive Tapenade #3,Mediterranean,32.0,32.6,34.2,19.5,465.7
+Tabbouleh #3,Mediterranean,30.0,40.9,29.7,24.5,354.0
+Grilled Chicken #3,Mediterranean,31.7,43.5,24.7,16.5,446.2
+Stuffed Peppers #3,Mediterranean,22.6,51.3,31.6,11.3,476.3
+Shrimp Skewers #3,Mediterranean,22.1,41.6,27.2,15.7,305.7
+Tzatziki Bowl #3,Mediterranean,32.5,34.5,19.2,22.0,368.1
+Lamb Kebab #3,Mediterranean,33.0,47.5,20.5,10.2,489.6
+Grass-fed Steak,Paleo,31.7,24.4,37.2,14.9,488.1
+Paleo Chicken,Paleo,42.9,19.8,44.8,6.2,394.3
+Sweet Potato Hash,Paleo,43.8,16.1,39.5,11.2,456.2
+Turkey Lettuce Wrap,Paleo,38.5,24.9,33.3,14.1,404.2
+Almond Crusted Salmon,Paleo,35.0,12.4,29.8,6.6,457.2
+Beef Stew,Paleo,45.2,13.7,30.4,11.3,494.9
+Coconut Shrimp,Paleo,49.5,20.5,32.1,6.3,388.8
+Bison Burger,Paleo,34.5,13.6,25.4,11.9,404.9
+Egg Scramble,Paleo,49.5,21.1,42.4,6.6,523.7
+Roasted Veggies,Paleo,39.8,27.5,39.4,11.1,438.1
+Walnut Salad,Paleo,33.7,11.0,48.5,11.2,514.4
+Avocado Chicken,Paleo,38.0,11.5,40.7,5.7,379.8
+Paleo Meatballs,Paleo,41.3,16.1,49.8,6.5,502.9
+Cauliflower Rice,Paleo,42.1,25.8,30.6,11.8,440.1
+Roasted Lamb,Paleo,38.9,27.2,49.8,9.0,474.2
+Grass-fed Steak #2,Paleo,42.2,24.8,48.7,7.7,392.2
+Paleo Chicken #2,Paleo,43.2,13.1,29.3,6.0,350.5
+Sweet Potato Hash #2,Paleo,39.0,21.9,32.3,8.0,491.4
+Turkey Lettuce Wrap #2,Paleo,44.1,19.1,42.2,17.0,507.6
+Almond Crusted Salmon #2,Paleo,42.5,23.2,48.3,10.5,458.9
+Beef Stew #2,Paleo,43.0,28.2,45.7,5.9,383.2
+Coconut Shrimp #2,Paleo,36.2,25.0,39.2,8.8,374.9
+Bison Burger #2,Paleo,43.8,24.0,48.6,11.5,448.8
+Egg Scramble #2,Paleo,31.6,10.8,35.8,9.2,400.1
+Roasted Veggies #2,Paleo,31.8,29.2,45.9,12.5,540.2
+Walnut Salad #2,Paleo,50.0,23.4,31.7,5.5,501.3
+Avocado Chicken #2,Paleo,39.4,23.0,47.9,7.4,467.1
+Paleo Meatballs #2,Paleo,42.7,19.8,27.3,9.5,416.7
+Cauliflower Rice #2,Paleo,43.4,27.2,33.2,14.0,407.6
+Roasted Lamb #2,Paleo,48.9,26.3,38.8,10.9,412.9
+Grass-fed Steak #3,Paleo,36.5,29.4,35.1,11.7,547.6
+Paleo Chicken #3,Paleo,43.2,20.9,35.3,7.4,422.4
+Sweet Potato Hash #3,Paleo,45.1,22.5,44.0,7.6,459.8
+Turkey Lettuce Wrap #3,Paleo,48.6,18.8,42.5,6.6,544.6
+Almond Crusted Salmon #3,Paleo,42.2,14.8,29.0,12.2,460.5
+Beef Stew #3,Paleo,31.9,29.8,47.8,11.0,373.5
+Coconut Shrimp #3,Paleo,46.6,20.0,42.9,11.6,404.7
+Bison Burger #3,Paleo,46.7,29.6,31.1,12.2,426.7
+Egg Scramble #3,Paleo,48.4,20.2,47.0,16.2,405.2
+Roasted Veggies #3,Paleo,45.8,18.3,48.4,11.6,514.1
+Veggie Stir Fry,Vegetarian,16.5,47.5,18.8,30.0,367.9
+Caprese Salad,Vegetarian,14.4,53.5,15.2,21.9,378.7
+Egg Fried Rice,Vegetarian,19.3,48.0,12.8,24.6,384.4
+Pasta Primavera,Vegetarian,15.7,59.4,10.7,25.4,411.0
+Cheese Quesadilla,Vegetarian,25.0,49.7,20.0,26.8,466.2
+Veggie Omelette,Vegetarian,19.9,40.9,17.5,22.6,443.9
+Ricotta Toast,Vegetarian,26.0,51.0,17.9,20.2,414.5
+Broccoli Soup,Vegetarian,18.6,56.4,12.3,20.5,463.8
+Vegetable Curry,Vegetarian,17.4,57.3,19.7,27.3,440.5
+Stuffed Mushrooms,Vegetarian,25.7,49.5,14.7,24.9,421.9
+Pesto Pasta,Vegetarian,26.0,40.9,11.0,23.4,454.2
+Bean Burrito,Vegetarian,28.0,58.7,16.5,13.8,396.7
+Margherita Pizza,Vegetarian,26.0,51.1,20.4,28.3,279.2
+Spinach Frittata,Vegetarian,24.7,47.3,15.6,14.6,376.2
+Cottage Cheese Bowl,Vegetarian,21.1,59.8,12.5,13.4,444.2
+Veggie Stir Fry #2,Vegetarian,21.9,46.0,23.7,14.6,362.2
+Caprese Salad #2,Vegetarian,16.1,46.4,10.1,26.5,450.2
+Egg Fried Rice #2,Vegetarian,22.8,43.9,16.6,18.2,387.5
+Pasta Primavera #2,Vegetarian,22.2,50.6,13.8,27.2,309.8
+Cheese Quesadilla #2,Vegetarian,18.2,52.1,13.6,22.3,385.0
+Veggie Omelette #2,Vegetarian,27.9,47.4,24.7,23.8,324.9
+Ricotta Toast #2,Vegetarian,21.1,57.1,21.2,12.9,391.3
+Broccoli Soup #2,Vegetarian,19.9,62.6,14.3,26.4,391.4
+Vegetable Curry #2,Vegetarian,17.6,55.9,19.3,24.2,414.2
+Stuffed Mushrooms #2,Vegetarian,22.5,61.0,19.4,28.3,399.3
+Pesto Pasta #2,Vegetarian,16.9,51.0,18.7,25.2,288.0
+Bean Burrito #2,Vegetarian,16.7,58.7,12.6,14.4,377.9
+Margherita Pizza #2,Vegetarian,27.5,53.3,23.7,26.9,321.4
+Spinach Frittata #2,Vegetarian,25.2,52.0,22.1,25.4,337.7
+Cottage Cheese Bowl #2,Vegetarian,13.8,64.1,12.1,29.4,442.0
+Veggie Stir Fry #3,Vegetarian,23.6,64.5,24.5,26.5,343.2
+Caprese Salad #3,Vegetarian,24.7,40.3,18.0,20.2,404.6
+Egg Fried Rice #3,Vegetarian,22.8,54.6,22.3,28.9,291.7
+Pasta Primavera #3,Vegetarian,15.7,40.6,23.3,22.1,453.1
+Cheese Quesadilla #3,Vegetarian,15.5,41.6,22.4,28.4,330.4
+Veggie Omelette #3,Vegetarian,18.5,43.5,24.2,17.5,368.5
+Ricotta Toast #3,Vegetarian,13.6,62.2,12.0,20.2,404.1
+Broccoli Soup #3,Vegetarian,23.9,63.6,16.3,25.4,300.9
+Vegetable Curry #3,Vegetarian,18.6,42.5,17.3,19.3,460.3
+Stuffed Mushrooms #3,Vegetarian,12.5,49.3,16.7,29.1,441.1
