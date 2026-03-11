@@ -24,9 +24,17 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r nutritional-insights/requirements.txt
 
+      - name: Prepare deployment package
+        run: |
+          mkdir -p deployment_package
+          cp -r nutritional-insights/* deployment_package/
+          cp nutritional-insights/requirements.txt deployment_package/
+          cd deployment_package
+          ls -la  # Debug: show files being packaged
+
       - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v3
         with:
           app-name: 'Assignment2-Cloud'
           publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
-          package: .
+          package: deployment_package  # Deploy the prepared folder
