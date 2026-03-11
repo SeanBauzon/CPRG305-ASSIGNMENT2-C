@@ -1,3 +1,4 @@
+python
 from flask import Flask, request, jsonify, render_template, Response
 import os
 from dotenv import load_dotenv
@@ -16,15 +17,32 @@ load_dotenv()
 
 app = Flask(__name__)
 
-# Load and clean CSV
-df = pd.read_csv("nutrition.csv")
-df.dropna(inplace=True)
-df.drop_duplicates(inplace=True)
 
-DIET_TYPES = sorted(df["diet_type"].unique().tolist())
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
-diet_avg = df.groupby("diet_type")[["protein", "carbs", "fat", "fiber", "calories"]].mean().round(2)
-diet_counts = df.groupby("diet_type").size().to_dict()
+# Load and clean CSV using absolute path
+csv_path = os.path.join(BASE_DIR, "nutrition.csv")
+try:
+    df = pd.read_csv(csv_path)
+    print(f"✅ CSV loaded successfully from {csv_path}")
+    
+    df.dropna(inplace=True)
+    df.drop_duplicates(inplace=True)
+    
+    DIET_TYPES = sorted(df["diet_type"].unique().tolist())
+    
+    diet_avg = df.groupby("diet_type")[["protein", "carbs", "fat", "fiber", "calories"]].mean().round(2)
+    diet_counts = df.groupby("diet_type").size().to_dict()
+    
+    print(f"✅ Data processed: {len(df)} recipes, {len(DIET_TYPES)} diet types")
+    
+except Exception as e:
+    print(f"❌ ERROR loading CSV: {e}")
+    # Create empty dataframes as fallback to prevent app from crashing
+    df = pd.DataFrame()
+    DIET_TYPES = []
+    diet_avg = pd.DataFrame()
+    diet_counts = {}
 
 DIET_COLORS = {
     "Vegan":         "#16a34a",
