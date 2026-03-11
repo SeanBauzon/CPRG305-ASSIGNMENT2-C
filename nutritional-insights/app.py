@@ -1,4 +1,6 @@
 from flask import Flask, request, jsonify, render_template, Response
+import os
+from dotenv import load_dotenv
 import pandas as pd
 import matplotlib
 matplotlib.use('Agg')
@@ -8,6 +10,9 @@ import io
 import hashlib
 import json
 import redis
+
+# Load environment variables from .env file
+load_dotenv()
 
 app = Flask(__name__)
 
@@ -31,29 +36,53 @@ DIET_COLORS = {
 
 
 # Redis connection
+_redis_client = None
+
+
+def _to_bool(value, default=False):
+    if value is None:
+        return default
+    return value.strip().lower() in {"1", "true", "yes", "on"}
+
+
 def get_redis():
-    return redis.Redis(
-        host="YOUR_REDIS_HOST.redis.azure.net",
-        port=10000,
-        password="YOUR_REDIS_PASSWORD",
-        ssl=True,
-        decode_responses=True
-    )
+    global _redis_client
+
+    if _redis_client is None:
+        redis_config = {
+            "host": os.getenv("REDIS_HOST", "localhost"),
+            "port": int(os.getenv("REDIS_PORT", "6379")),
+            "password": os.getenv("REDIS_PASSWORD") or None,
+            "ssl": _to_bool(os.getenv("REDIS_SSL"), default=False),
+            "db": int(os.getenv("REDIS_DB", "0")),
+            "decode_responses": True,
+            "socket_connect_timeout": 2,
+            "socket_timeout": 2,
+            "retry_on_timeout": True,
+        }
+
+        redis_username = os.getenv("REDIS_USERNAME")
+        if redis_username:
+            redis_config["username"] = redis_username
+
+        _redis_client = redis.Redis(**redis_config)
+
+    return _redis_client
+
 
 
 def cache_get(key):
     try:
         return get_redis().get(key)
-    except:
+    except Exception:
         return None
 
 
 def cache_set(key, value, ttl=3600):
     try:
         get_redis().setex(key, ttl, value)
-    except:
+    except Exception:
         pass
-
 
 # Convert a matplotlib figure to a PNG image response
 def fig_to_png(fig):
@@ -218,7 +247,7 @@ def recipes():
     diet_filter = request.args.get("diet", "all").lower()
     page = int(request.args.get("page", 1))
     per_page = int(request.args.get("per_page", 10))
-    cache_key = "recipes:" + hashlib.md5(f"{diet_filter}:{page}".encode()).hexdigest()
+    cache_key = "recipes:" + hashlib.md5(f"{diet_filter}:{page}:{per_page}".encode()).hexdigest()
 
     cached = cache_get(cache_key)
     if cached:
