@@ -1,0 +1,14 @@
+venv/
+pythonenv/
+__pycache__/
+*.pyc
+
+*.csv
+*.zip
+*.tar
+
+node_modules/
+.env
+
+dist/
+build/
