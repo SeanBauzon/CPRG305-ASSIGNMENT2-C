@@ -83,6 +83,69 @@
       display: none;
     }
 
+    .api-data h3 {
+      font-size: 1.2rem;
+      font-weight: 700;
+      margin-bottom: 12px;
+      color: #111;
+    }
+
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.9rem;
+    }
+
+    .data-table th,
+    .data-table td {
+      padding: 8px 12px;
+      text-align: left;
+      border-bottom: 1px solid #e5e7eb;
+      white-space: nowrap;
+    }
+
+    .table-wrapper {
+      overflow-x: auto;
+      margin-top: 12px;
+    }
+
+    .data-table th {
+      background: #f9fafb;
+      font-weight: 600;
+      color: #374151;
+    }
+
+    .data-table tr:hover {
+      background: #f3f4f6;
+    }
+
+    .cluster-card {
+      background: #f9fafb;
+      border-radius: 8px;
+      padding: 12px;
+      margin-bottom: 8px;
+      border-left: 4px solid #2563eb;
+    }
+
+    .cluster-card h4 {
+      font-size: 1rem;
+      font-weight: 600;
+      margin-bottom: 4px;
+      color: #111;
+    }
+
+    .cluster-card p {
+      font-size: 0.85rem;
+      color: #666;
+      margin: 2px 0;
+    }
+
+    .clusters-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 12px;
+    }
+
     .pagination { display: flex; gap: 8px; justify-content: center; align-items: center; }
     .page-btn {
       width: 38px; height: 38px;
@@ -181,7 +244,7 @@
       <button class="btn btn-green"  onclick="fetchAPI('/api/recipes','Recipes')">Get Recipes</button>
       <button class="btn btn-purple" onclick="fetchAPI('/api/clusters','Clusters')">Get Clusters</button>
     </div>
-    <pre id="api-response"></pre>
+    <div id="api-data" class="api-data"></div>
   </section>
 
   <!-- Pagination -->
@@ -202,24 +265,145 @@
 
 <script>
   let currentPage = 1;
+  let currentDietFilter = "";
+  let currentSearchFilter = "";
+  let lastFetchedUrl = "";
+  let lastFetchedLabel = "";
 
   async function fetchAPI(url, label) {
-    const box = document.getElementById("api-response");
-    box.style.display = "block";
-    box.textContent = `Fetching ${label}...`;
+    const dataDiv = document.getElementById("api-data");
+    dataDiv.style.display = "none";
+    dataDiv.innerHTML = `<h3>Loading ${label}...</h3>`;
+    dataDiv.style.display = "block";
     try {
-      const data = await (await fetch(url)).json();
-      box.textContent = JSON.stringify(data, null, 2);
+      let apiUrl = url;
+      // Add diet filter to relevant endpoints
+      if (currentDietFilter && (url.includes('nutritional-insights') || url.includes('recipes'))) {
+        apiUrl += `?diet=${encodeURIComponent(currentDietFilter)}`;
+      }
+      const response = await fetch(apiUrl);
+      const data = await response.json();
+      lastFetchedUrl = url;
+      lastFetchedLabel = label;
+      displayFormattedData(data, label, url);
       showToast(`${label} loaded ✓`);
     } catch {
-      box.textContent = "Error fetching data.";
+      dataDiv.innerHTML = `<h3>Error loading ${label}</h3><p>Failed to fetch data.</p>`;
     }
+  }
+
+  function displayFormattedData(data, label, url) {
+    const dataDiv = document.getElementById("api-data");
+    dataDiv.innerHTML = `<h3>${label}</h3>`;
+
+    if (url.includes('nutritional-insights')) {
+      displayNutritionalInsights(data);
+    } else if (url.includes('recipes')) {
+      displayRecipes(data);
+    } else if (url.includes('clusters')) {
+      displayClusters(data);
+    }
+  }
+
+  function applySearchFilter(data, searchField) {
+    if (!currentSearchFilter) return data;
+    return data.filter(item => 
+      item[searchField] && item[searchField].toLowerCase().includes(currentSearchFilter)
+    );
+  }
+
+  function displayNutritionalInsights(data) {
+    const dataDiv = document.getElementById("api-data");
+    let filteredData = data.data;
+    if (currentSearchFilter) {
+      filteredData = {};
+      for (const [diet, nutrients] of Object.entries(data.data)) {
+        if (diet.toLowerCase().includes(currentSearchFilter)) {
+          filteredData[diet] = nutrients;
+        }
+      }
+    }
+    
+    let html = '<div class="table-wrapper"><table class="data-table"><thead><tr><th>Diet Type</th><th>Protein (g)</th><th>Carbs (g)</th><th>Fat (g)</th><th>Fiber (g)</th><th>Calories</th></tr></thead><tbody>';
+    
+    for (const [diet, nutrients] of Object.entries(filteredData)) {
+      html += `<tr>
+        <td>${diet}</td>
+        <td>${nutrients.protein}</td>
+        <td>${nutrients.carbs}</td>
+        <td>${nutrients.fat}</td>
+        <td>${nutrients.fiber}</td>
+        <td>${nutrients.calories}</td>
+      </tr>`;
+    }
+    html += '</tbody></table></div>';
+    dataDiv.innerHTML += html;
+  }
+
+  function displayRecipes(data) {
+    const dataDiv = document.getElementById("api-data");
+    let filteredData = data.data;
+    if (currentSearchFilter) {
+      filteredData = data.data.filter(recipe => 
+        recipe.food_name.toLowerCase().includes(currentSearchFilter) ||
+        recipe.diet_type.toLowerCase().includes(currentSearchFilter)
+      );
+    }
+    
+    let html = `<p>Showing ${filteredData.length} of ${data.total} recipes (Page ${data.page} of ${data.pages})</p>`;
+    html += '<div class="table-wrapper"><table class="data-table"><thead><tr><th>Food Name</th><th>Diet Type</th><th>Protein (g)</th><th>Carbs (g)</th><th>Fat (g)</th><th>Calories</th></tr></thead><tbody>';
+    
+    filteredData.forEach(recipe => {
+      html += `<tr>
+        <td>${recipe.food_name || 'N/A'}</td>
+        <td>${recipe.diet_type}</td>
+        <td>${recipe.protein}</td>
+        <td>${recipe.carbs}</td>
+        <td>${recipe.fat}</td>
+        <td>${recipe.calories}</td>
+      </tr>`;
+    });
+    html += '</tbody></table></div>';
+    dataDiv.innerHTML += html;
+  }
+
+  function displayClusters(data) {
+    const dataDiv = document.getElementById("api-data");
+    let filteredData = data.clusters;
+    if (currentSearchFilter) {
+      filteredData = data.clusters.filter(cluster => 
+        cluster.diet.toLowerCase().includes(currentSearchFilter) ||
+        cluster.dominant_macro.toLowerCase().includes(currentSearchFilter)
+      );
+    }
+    
+    let html = '<div class="clusters-container">';
+    
+    filteredData.forEach(cluster => {
+      html += `<div class="cluster-card">
+        <h4>${cluster.diet}</h4>
+        <p><strong>Dominant Macro:</strong> ${cluster.dominant_macro}</p>
+        <p><strong>Averages:</strong> Protein: ${cluster.avg_protein}g, Carbs: ${cluster.avg_carbs}g, Fat: ${cluster.avg_fat}g</p>
+        <p><strong>Calories:</strong> ${cluster.avg_calories} | <strong>Recipes:</strong> ${cluster.recipe_count}</p>
+      </div>`;
+    });
+    html += '</div>';
+    dataDiv.innerHTML += html;
   }
 
   function filterDiet() {
     const search = document.getElementById("searchInput").value.toLowerCase();
     const select = document.getElementById("dietSelect").value;
-    showToast(`Filter: "${select || "All"}" / search: "${search || "—"}"`);
+    
+    currentDietFilter = select;
+    currentSearchFilter = search;
+    
+    // If we have previously fetched data, refetch with new filters
+    if (lastFetchedUrl) {
+      fetchAPI(lastFetchedUrl, lastFetchedLabel);
+    } else {
+      showToast(`Filter set: "${select || "All"}" / search: "${search || "—"}"`);
+    }
   }
 
   function setPage(n) {
