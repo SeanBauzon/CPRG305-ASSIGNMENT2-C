@@ -26,7 +26,7 @@ jobs:
 
       - name: Prepare deployment package
         run: |
-          cp -r nutritional-insights/* .
+          cp -r nutritional-insights/. .
           ls -la  # Verify files
 
       - name: Deploy to Azure Web App

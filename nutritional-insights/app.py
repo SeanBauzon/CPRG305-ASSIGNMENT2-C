@@ -25,13 +25,15 @@ app.secret_key = os.getenv("SECRET_KEY", "nutritional-insights-secret-key")
 oauth = OAuth(app)
 
 BASE_URL = os.getenv("BASE_URL", "http://127.0.0.1:5000")
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 app.config["GOOGLE_CLIENT_ID"] = os.getenv("GOOGLE_CLIENT_ID")
 app.config["GOOGLE_CLIENT_SECRET"] = os.getenv("GOOGLE_CLIENT_SECRET")
 app.config["GITHUB_CLIENT_ID"] = os.getenv("GITHUB_CLIENT_ID")
 app.config["GITHUB_CLIENT_SECRET"] = os.getenv("GITHUB_CLIENT_SECRET")
 # Load and clean CSV
-df = pd.read_csv("nutrition.csv")
+csv_path = os.path.join(BASE_DIR, "nutrition.csv")
+df = pd.read_csv(csv_path)
 df.dropna(inplace=True)
 df.drop_duplicates(inplace=True)
 
