@@ -4,3 +4,6 @@ pandas
 redis
 matplotlib
 numpy
+authlib
+python-dotenv
+pyotp

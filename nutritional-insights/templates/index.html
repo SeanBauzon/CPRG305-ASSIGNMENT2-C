@@ -308,8 +308,13 @@
       <div class="card">
         <p style="font-size:0.88rem;font-weight:700;margin-bottom:12px;">Secure Login</p>
         <div class="btn-row">
-          <button id="btn-google" class="btn btn-blue" onclick="oauthLogin('Google')">Login with Google</button>
-          <button id="btn-github" class="btn btn-gray" onclick="oauthLogin('GitHub')">Login with GitHub</button>
+          <button id="btn-google" class="btn btn-blue" onclick="loginWithGoogle()">
+            Login with Google
+          </button>
+
+          <button id="btn-github" class="btn btn-gray" onclick="loginWithGithub()">
+            Login with GitHub
+          </button>
         </div>
         <div id="oauth-alert" class="alert"></div>
       </div>
@@ -375,9 +380,12 @@
   let currentPage = 1;
   let totalPages  = 1;
   let currentDiet = "";
+  let twoFactorRequired = false;
 
   // On load
   window.addEventListener("load", () => {
+    handleOAuthStateFromUrl();
+    updateTwoFactorUI();
     loadSecurityStatus();
     loadDeploymentStatus();
     loadMetrics();
@@ -599,33 +607,102 @@
     document.getElementById("clusters-wrap").style.display = "none";
   }
 
-  // OAuth login
-  async function oauthLogin(provider) {
+  // // OAuth login
+  // async function oauthLogin(provider) {
+  //   if (isLoading) return;
+  //   isLoading = true;
+  //   const btnId = provider === "Google" ? "btn-google" : "btn-github";
+  //   setLoading(btnId, true, `Login with ${provider}`);
+  //   showAlert("oauth-alert", "info", `Connecting to ${provider}...`);
+  //   try {
+  //     const res  = await fetch("/api/oauth-login", {
+  //       method: "POST",
+  //       headers: { "Content-Type": "application/json" },
+  //       body: JSON.stringify({ provider })
+  //     });
+  //     const d = await res.json();
+  //     showAlert("oauth-alert", "success", `✓ Logged in as ${d.user.email}`);
+  //     showToast(`Logged in with ${provider} ✓`);
+  //   } catch {
+  //     showAlert("oauth-alert", "error", "Login failed. Please try again.");
+  //   } finally {
+  //     isLoading = false;
+  //     setLoading(btnId, false, `Login with ${provider}`);
+  //   }
+  // }
+
+  async function loginWithGithub() {
     if (isLoading) return;
     isLoading = true;
-    const btnId = provider === "Google" ? "btn-google" : "btn-github";
-    setLoading(btnId, true, `Login with ${provider}`);
-    showAlert("oauth-alert", "info", `Connecting to ${provider}...`);
+    setLoading("btn-github", true, "Login with GitHub");
+    showAlert("oauth-alert", "info", "Redirecting to GitHub...");
+    window.location.href = "/auth/github";
+  }
+
+  async function loginWithGoogle() {
+    if (isLoading) return;
+    isLoading = true;
+    setLoading("btn-google", true, "Login with Google");
+    showAlert("oauth-alert", "info", "Redirecting to Google...");
+    window.location.href = "/auth/google";
+  }
+
+  async function send2FA() {
     try {
-      const res  = await fetch("/api/oauth-login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ provider })
-      });
+      const res = await fetch("/api/send-2fa", { method: "POST" });
       const d = await res.json();
-      showAlert("oauth-alert", "success", `✓ Logged in as ${d.user.email}`);
-      showToast(`Logged in with ${provider} ✓`);
-    } catch {
-      showAlert("oauth-alert", "error", "Login failed. Please try again.");
-    } finally {
-      isLoading = false;
-      setLoading(btnId, false, `Login with ${provider}`);
+      if (!res.ok) {
+        throw new Error(d.message || d.error || "Unable to send 2FA code.");
+      }
+      showAlert("twofa-alert", "info", d.message || "2FA code sent. Check your email inbox.");
+      showToast("2FA code generated");
+    } catch (err) {
+      showAlert("twofa-alert", "error", err.message || "Unable to send 2FA code.");
+    }
+  }
+
+  function handleOAuthStateFromUrl() {
+    const params = new URLSearchParams(window.location.search);
+    const login = params.get("login");
+    const twofa = params.get("twofa");
+
+    if (login === "google" && twofa === "required") {
+      twoFactorRequired = true;
+      updateTwoFactorUI();
+      showAlert("oauth-alert", "success", "Google login successful. Continue with 2FA.");
+      send2FA();
+      window.history.replaceState({}, document.title, window.location.pathname);
+      return;
+    }
+
+    if (login === "github") {
+      twoFactorRequired = false;
+      updateTwoFactorUI();
+      showAlert("oauth-alert", "success", "GitHub login successful.");
+      window.history.replaceState({}, document.title, window.location.pathname);
+    }
+  }
+
+  function updateTwoFactorUI() {
+    const input = document.getElementById("twofa-input");
+    const button = document.getElementById("btn-2fa");
+
+    input.disabled = !twoFactorRequired;
+    button.disabled = !twoFactorRequired;
+
+    if (!twoFactorRequired) {
+      input.value = "";
+      showAlert("twofa-alert", "info", "2FA is only required after Google login.");
     }
   }
 
   // 2FA verification
   async function verify2FA() {
     if (isLoading) return;
+    if (!twoFactorRequired) {
+      showAlert("twofa-alert","info","Sign in with Google to use 2FA.");
+      return;
+    }
     const code = document.getElementById("twofa-input").value.trim();
     if (!code) { showAlert("twofa-alert","error","Please enter a 6-digit code."); return; }
     isLoading = true;
@@ -637,11 +714,14 @@
         body: JSON.stringify({ code })
       });
       const d = await res.json();
-      if (d.verified) {
-        showAlert("twofa-alert","success","✓ 2FA verification successful!");
+      if (res.ok && d.verified) {
+        showAlert("twofa-alert","success","You verified your email successfully.");
         document.getElementById("twofa-input").value = "";
+        twoFactorRequired = false;
+        updateTwoFactorUI();
+        showToast("2FA verified");
       } else {
-        showAlert("twofa-alert","error","✗ " + d.message);
+        showAlert("twofa-alert","error", d.message || d.error || "Invalid code.");
       }
     } catch {
       showAlert("twofa-alert","error","Verification failed.");
@@ -659,14 +739,26 @@
     document.getElementById("cleanup-list").style.display = "none";
     document.getElementById("cleanup-alert").style.display = "none";
     try {
-      const d = await (await fetch("/api/cleanup", { method: "POST" })).json();
+      const res = await fetch("/api/cleanup", { method: "POST" });
+      const d = await res.json();
       const list = document.getElementById("cleanup-list");
-      list.innerHTML = d.actions.map(a=>`<li>✓ ${a}</li>`).join("");
+      const actionItems = (d.actions || []).map(a=>`<li>✓ ${a}</li>`);
+      const warningItems = (d.warnings || []).map(w=>`<li>${w}</li>`);
+      list.innerHTML = [...actionItems, ...warningItems].join("");
       list.style.display = "block";
-      showAlert("cleanup-alert","success", d.message);
-      showToast("Cleanup complete ✓");
+      if (!res.ok || d.status === "error") {
+        showAlert("cleanup-alert","error", d.message || "Cleanup failed.");
+        showToast("Cleanup failed");
+      } else if (d.status === "partial") {
+        showAlert("cleanup-alert","info", d.message);
+        showToast("Cleanup completed with warnings");
+      } else {
+        showAlert("cleanup-alert","success", d.message);
+        showToast("Cleanup complete ✓");
+      }
     } catch {
       showAlert("cleanup-alert","error","Cleanup failed.");
+      showToast("Cleanup failed");
     } finally {
       isLoading = false;
       setLoading("btn-cleanup", false, "Clean Up Resources");
