@@ -1,7 +1,6 @@
-flask==3.0.3
-gunicorn==22.0.0
-pandas==2.2.2
-redis==5.0.4
-matplotlib==3.9.0
-numpy==1.26.4
-python-dotenv==1.0.1
+flask
+gunicorn
+pandas
+redis
+matplotlib
+numpy
