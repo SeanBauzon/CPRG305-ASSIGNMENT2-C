@@ -17,7 +17,8 @@ from authlib.integrations.flask_client import OAuth
 from dotenv import load_dotenv
 from email.message import EmailMessage
 
-load_dotenv()
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+load_dotenv(os.path.join(BASE_DIR, ".env"))
 
 app = Flask(__name__)
 app.secret_key = os.getenv("SECRET_KEY", "nutritional-insights-secret-key")
@@ -25,7 +26,6 @@ app.secret_key = os.getenv("SECRET_KEY", "nutritional-insights-secret-key")
 oauth = OAuth(app)
 
 BASE_URL = os.getenv("BASE_URL", "http://127.0.0.1:5000")
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 app.config["GOOGLE_CLIENT_ID"] = os.getenv("GOOGLE_CLIENT_ID")
 app.config["GOOGLE_CLIENT_SECRET"] = os.getenv("GOOGLE_CLIENT_SECRET")
@@ -33,14 +33,19 @@ app.config["GITHUB_CLIENT_ID"] = os.getenv("GITHUB_CLIENT_ID")
 app.config["GITHUB_CLIENT_SECRET"] = os.getenv("GITHUB_CLIENT_SECRET")
 # Load and clean CSV
 csv_path = os.path.join(BASE_DIR, "nutrition.csv")
-df = pd.read_csv(csv_path)
-df.dropna(inplace=True)
-df.drop_duplicates(inplace=True)
-
-DIET_TYPES = sorted(df["diet_type"].unique().tolist())
-
-diet_avg = df.groupby("diet_type")[["protein", "carbs", "fat", "fiber", "calories"]].mean().round(2)
-diet_counts = df.groupby("diet_type").size().to_dict()
+try:
+    df = pd.read_csv(csv_path)
+    df.dropna(inplace=True)
+    df.drop_duplicates(inplace=True)
+    DIET_TYPES = sorted(df["diet_type"].unique().tolist())
+    diet_avg = df.groupby("diet_type")[["protein", "carbs", "fat", "fiber", "calories"]].mean().round(2)
+    diet_counts = df.groupby("diet_type").size().to_dict()
+except Exception as exc:
+    print(f"Failed to load nutrition data: {exc}")
+    df = pd.DataFrame(columns=["food_name", "diet_type", "protein", "carbs", "fat", "fiber", "calories"])
+    DIET_TYPES = []
+    diet_avg = pd.DataFrame(columns=["protein", "carbs", "fat", "fiber", "calories"])
+    diet_counts = {}
 
 DIET_COLORS = {
     "Vegan":         "#16a34a",
