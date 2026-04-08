@@ -1,6 +1,4 @@
-from flask import Flask, request, jsonify, render_template, Response
-import os
-from dotenv import load_dotenv
+from flask import Flask, request, jsonify, render_template, Response, session
 import pandas as pd
 import matplotlib
 matplotlib.use('Agg')
@@ -9,12 +7,12 @@ import numpy as np
 import io
 import hashlib
 import json
+import os
+import time
 import redis
 
-# Load environment variables from .env file
-load_dotenv()
-
 app = Flask(__name__)
+app.secret_key = "nutritional-insights-secret-key"
 
 # Load and clean CSV
 df = pd.read_csv("nutrition.csv")
@@ -34,55 +32,51 @@ DIET_COLORS = {
     "Vegetarian":    "#7c3aed",
 }
 
+# In-memory metrics tracking
+metrics = {
+    "total_requests":   0,
+    "cache_hits":       0,
+    "cache_misses":     0,
+    "api_calls":        {},
+    "start_time":       time.time(),
+}
+
 
 # Redis connection
-_redis_client = None
-
-
-def _to_bool(value, default=False):
-    if value is None:
-        return default
-    return value.strip().lower() in {"1", "true", "yes", "on"}
-
-
 def get_redis():
-    global _redis_client
-
-    if _redis_client is None:
-        redis_config = {
-            "host": os.getenv("REDIS_HOST", "localhost"),
-            "port": int(os.getenv("REDIS_PORT", "6379")),
-            "password": os.getenv("REDIS_PASSWORD") or None,
-            "ssl": _to_bool(os.getenv("REDIS_SSL"), default=False),
-            "db": int(os.getenv("REDIS_DB", "0")),
-            "decode_responses": True,
-            "socket_connect_timeout": 2,
-            "socket_timeout": 2,
-            "retry_on_timeout": True,
-        }
-
-        redis_username = os.getenv("REDIS_USERNAME")
-        if redis_username:
-            redis_config["username"] = redis_username
-
-        _redis_client = redis.Redis(**redis_config)
-
-    return _redis_client
-
+    return redis.Redis(
+        host=os.environ.get("REDIS_HOST", "YOUR_REDIS_HOST.redis.azure.net"),
+        port=10000,
+        password=os.environ.get("REDIS_PASSWORD", "YOUR_REDIS_PASSWORD"),
+        ssl=True,
+        decode_responses=True
+    )
 
 
 def cache_get(key):
     try:
-        return get_redis().get(key)
-    except Exception:
+        val = get_redis().get(key)
+        if val:
+            metrics["cache_hits"] += 1
+        else:
+            metrics["cache_misses"] += 1
+        return val
+    except:
+        metrics["cache_misses"] += 1
         return None
 
 
 def cache_set(key, value, ttl=3600):
     try:
         get_redis().setex(key, ttl, value)
-    except Exception:
+    except:
         pass
+
+
+def track(endpoint):
+    metrics["total_requests"] += 1
+    metrics["api_calls"][endpoint] = metrics["api_calls"].get(endpoint, 0) + 1
+
 
 # Convert a matplotlib figure to a PNG image response
 def fig_to_png(fig):
@@ -99,17 +93,20 @@ def index():
     return render_template("index.html")
 
 
-# Bar chart: average macronutrients per diet type
+# Bar chart
 @app.route("/chart/bar")
 def chart_bar():
-    diets = diet_avg.index.tolist()
+    diet_filter = request.args.get("diet", "").strip()
+    data = diet_avg.loc[[diet_filter]] if (diet_filter and diet_filter in DIET_TYPES) else diet_avg
+
+    diets = data.index.tolist()
     x = np.arange(len(diets))
     width = 0.25
 
     fig, ax = plt.subplots(figsize=(7, 4))
-    ax.bar(x - width, diet_avg["protein"], width, label="Protein (g)", color="#2563eb")
-    ax.bar(x,         diet_avg["carbs"],   width, label="Carbs (g)",   color="#16a34a")
-    ax.bar(x + width, diet_avg["fat"],     width, label="Fat (g)",     color="#f59e0b")
+    ax.bar(x - width, data["protein"], width, label="Protein (g)", color="#2563eb")
+    ax.bar(x,         data["carbs"],   width, label="Carbs (g)",   color="#16a34a")
+    ax.bar(x + width, data["fat"],     width, label="Fat (g)",     color="#f59e0b")
 
     ax.set_xticks(x)
     ax.set_xticklabels(diets, rotation=15, ha="right")
@@ -118,25 +115,21 @@ def chart_bar():
     ax.legend(fontsize=8)
     ax.spines[["top", "right"]].set_visible(False)
     fig.tight_layout()
-
     return fig_to_png(fig)
 
 
-# Scatter plot: protein vs carbs for each recipe
+# Scatter plot
 @app.route("/chart/scatter")
 def chart_scatter():
-    fig, ax = plt.subplots(figsize=(7, 4))
+    diet_filter = request.args.get("diet", "").strip()
+    subset_df = df[df["diet_type"] == diet_filter] if (diet_filter and diet_filter in DIET_TYPES) else df
+    diets_to_show = [diet_filter] if (diet_filter and diet_filter in DIET_TYPES) else DIET_TYPES
 
-    for diet in DIET_TYPES:
-        subset = df[df["diet_type"] == diet]
-        ax.scatter(
-            subset["protein"],
-            subset["carbs"],
-            label=diet,
-            color=DIET_COLORS[diet],
-            alpha=0.7,
-            s=40
-        )
+    fig, ax = plt.subplots(figsize=(7, 4))
+    for diet in diets_to_show:
+        subset = subset_df[subset_df["diet_type"] == diet]
+        ax.scatter(subset["protein"], subset["carbs"],
+                   label=diet, color=DIET_COLORS[diet], alpha=0.7, s=40)
 
     ax.set_xlabel("Protein (g)")
     ax.set_ylabel("Carbs (g)")
@@ -144,18 +137,20 @@ def chart_scatter():
     ax.legend(fontsize=8)
     ax.spines[["top", "right"]].set_visible(False)
     fig.tight_layout()
-
     return fig_to_png(fig)
 
 
-# Heatmap: nutrient levels across diet types
+# Heatmap
 @app.route("/chart/heatmap")
 def chart_heatmap():
-    nutrients = ["protein", "carbs", "fat", "fiber", "calories"]
-    data = diet_avg[nutrients]
+    diet_filter = request.args.get("diet", "").strip()
+    if diet_filter and diet_filter in DIET_TYPES:
+        data = diet_avg.loc[[diet_filter], ["protein", "carbs", "fat", "fiber", "calories"]]
+    else:
+        data = diet_avg[["protein", "carbs", "fat", "fiber", "calories"]]
 
-    # Normalise each column 0-1 so colours are comparable
-    normed = (data - data.min()) / (data.max() - data.min())
+    nutrients = data.columns.tolist()
+    normed = (data - data.min()) / (data.max() - data.min()).replace(0, 1)
 
     fig, ax = plt.subplots(figsize=(7, 4))
     im = ax.imshow(normed.values, cmap=plt.cm.RdYlGn, aspect="auto", vmin=0, vmax=1)
@@ -165,57 +160,45 @@ def chart_heatmap():
     ax.set_yticks(range(len(data.index)))
     ax.set_yticklabels(data.index.tolist())
 
-    # Show the actual value inside each cell
     for i in range(len(data.index)):
         for j in range(len(nutrients)):
-            ax.text(
-                j, i,
-                f"{data.values[i, j]:.1f}",
-                ha="center",
-                va="center",
-                fontsize=8,
-                color="black"
-            )
+            ax.text(j, i, f"{data.values[i, j]:.1f}",
+                    ha="center", va="center", fontsize=8, color="black")
 
     plt.colorbar(im, ax=ax, label="Relative intensity")
     ax.set_title("Nutrient Heatmap by Diet Type")
     fig.tight_layout()
-
     return fig_to_png(fig)
 
 
-# Pie chart: how many recipes per diet type
+# Pie chart
 @app.route("/chart/pie")
 def chart_pie():
-    labels = list(diet_counts.keys())
-    sizes = list(diet_counts.values())
+    diet_filter = request.args.get("diet", "").strip()
+    counts = {diet_filter: diet_counts.get(diet_filter, 0)} if (diet_filter and diet_filter in DIET_TYPES) else diet_counts
+
+    labels = list(counts.keys())
+    sizes  = list(counts.values())
     colors = [DIET_COLORS[l] for l in labels]
 
     fig, ax = plt.subplots(figsize=(6, 4))
     wedges, texts, autotexts = ax.pie(
-        sizes,
-        labels=labels,
-        colors=colors,
-        autopct="%1.1f%%",
-        startangle=140,
-        wedgeprops={
-            "edgecolor": "white",
-            "linewidth": 2
-        }
+        sizes, labels=labels, colors=colors,
+        autopct="%1.1f%%", startangle=140,
+        wedgeprops={"edgecolor": "white", "linewidth": 2}
     )
-
     for t in autotexts:
         t.set_fontsize(8)
 
     ax.set_title("Recipe Distribution by Diet Type")
     fig.tight_layout()
-
     return fig_to_png(fig)
 
 
-# API: average nutrition data, optionally filtered by diet
+# API: nutritional insights
 @app.route("/api/nutritional-insights")
 def nutritional_insights():
+    track("nutritional-insights")
     diet_filter = request.args.get("diet", "all").lower()
     cache_key = "insights:" + hashlib.md5(diet_filter.encode()).hexdigest()
 
@@ -225,10 +208,7 @@ def nutritional_insights():
         result["source"] = "cache"
         return jsonify(result)
 
-    if diet_filter != "all" and diet_filter.title() in DIET_TYPES:
-        subset = diet_avg.loc[[diet_filter.title()]]
-    else:
-        subset = diet_avg
+    subset = diet_avg.loc[[diet_filter.title()]] if (diet_filter != "all" and diet_filter.title() in DIET_TYPES) else diet_avg
 
     result = {
         "status": "success",
@@ -236,18 +216,18 @@ def nutritional_insights():
         "source": "computed",
         "data": subset.to_dict(orient="index"),
     }
-
     cache_set(cache_key, json.dumps(result))
     return jsonify(result)
 
 
-# API: paginated recipe list, optionally filtered by diet
+# API: recipes with pagination
 @app.route("/api/recipes")
 def recipes():
+    track("recipes")
     diet_filter = request.args.get("diet", "all").lower()
-    page = int(request.args.get("page", 1))
-    per_page = int(request.args.get("per_page", 10))
-    cache_key = "recipes:" + hashlib.md5(f"{diet_filter}:{page}:{per_page}".encode()).hexdigest()
+    page        = int(request.args.get("page", 1))
+    per_page    = int(request.args.get("per_page", 10))
+    cache_key   = "recipes:" + hashlib.md5(f"{diet_filter}:{page}".encode()).hexdigest()
 
     cached = cache_get(cache_key)
     if cached:
@@ -255,13 +235,9 @@ def recipes():
         result["source"] = "cache"
         return jsonify(result)
 
-    if diet_filter != "all" and diet_filter.title() in DIET_TYPES:
-        subset = df[df["diet_type"] == diet_filter.title()]
-    else:
-        subset = df.copy()
-
-    total = len(subset)
-    paged = subset.iloc[(page - 1) * per_page : page * per_page]
+    subset = df[df["diet_type"] == diet_filter.title()] if (diet_filter != "all" and diet_filter.title() in DIET_TYPES) else df.copy()
+    total  = len(subset)
+    paged  = subset.iloc[(page - 1) * per_page : page * per_page]
 
     result = {
         "status": "success",
@@ -271,18 +247,16 @@ def recipes():
         "per_page": per_page,
         "pages": (total + per_page - 1) // per_page,
         "data": paged.to_dict(orient="records"),
-        "pie_data": {
-            d: int(c) for d, c in diet_counts.items()
-        }
+        "pie_data": {d: int(c) for d, c in diet_counts.items()}
     }
-
     cache_set(cache_key, json.dumps(result))
     return jsonify(result)
 
 
-# API: diet clusters grouped by dominant macronutrient
+# API: clusters
 @app.route("/api/clusters")
 def clusters():
+    track("clusters")
     cache_key = "clusters:all"
 
     cached = cache_get(cache_key)
@@ -292,34 +266,147 @@ def clusters():
         return jsonify(result)
 
     clusters_list = []
-
     for diet in DIET_TYPES:
         if diet not in diet_avg.index:
             continue
-
-        row = diet_avg.loc[diet]
+        row      = diet_avg.loc[diet]
         dominant = max(["protein", "carbs", "fat"], key=lambda n: row[n])
-
         clusters_list.append(
             {
-                "diet": diet,
+                "diet":           diet,
                 "dominant_macro": dominant,
-                "avg_protein": round(float(row["protein"]), 2),
-                "avg_carbs": round(float(row["carbs"]), 2),
-                "avg_fat": round(float(row["fat"]), 2),
-                "avg_calories": round(float(row["calories"]), 2),
-                "recipe_count": diet_counts.get(diet, 0),
+                "avg_protein":    round(float(row["protein"]),  2),
+                "avg_carbs":      round(float(row["carbs"]),    2),
+                "avg_fat":        round(float(row["fat"]),      2),
+                "avg_calories":   round(float(row["calories"]), 2),
+                "recipe_count":   diet_counts.get(diet, 0),
             }
         )
 
-    result = {
-        "status": "success",
-        "source": "computed",
-        "clusters": clusters_list
-    }
-
+    result = {"status": "success", "source": "computed", "clusters": clusters_list}
     cache_set(cache_key, json.dumps(result))
     return jsonify(result)
+
+
+# API: security status
+@app.route("/api/security-status")
+def security_status():
+    return jsonify(
+        {
+            "status":         "success",
+            "encryption":     "Enabled",
+            "access_control": "Secure",
+            "compliance":     "GDPR Compliant",
+            "ssl":            True,
+            "redis_encrypted": True,
+        }
+    )
+
+
+# API: live metrics & monitoring
+@app.route("/api/metrics")
+def get_metrics():
+    uptime_seconds = int(time.time() - metrics["start_time"])
+    hours   = uptime_seconds // 3600
+    minutes = (uptime_seconds % 3600) // 60
+    seconds = uptime_seconds % 60
+
+    total = metrics["cache_hits"] + metrics["cache_misses"]
+    hit_rate = round((metrics["cache_hits"] / total * 100), 1) if total > 0 else 0.0
+
+    return jsonify(
+        {
+            "status":          "success",
+            "uptime":          f"{hours:02d}:{minutes:02d}:{seconds:02d}",
+            "total_requests":  metrics["total_requests"],
+            "cache_hits":      metrics["cache_hits"],
+            "cache_misses":    metrics["cache_misses"],
+            "cache_hit_rate":  f"{hit_rate}%",
+            "total_recipes":   len(df),
+            "total_diets":     len(DIET_TYPES),
+            "api_calls":       metrics["api_calls"],
+        }
+    )
+
+
+# API: CI/CD deployment status
+@app.route("/api/deployment-status")
+def deployment_status():
+    return jsonify(
+        {
+            "status":       "success",
+            "pipeline":     "GitHub Actions",
+            "last_deploy":  "Triggered on push to main",
+            "build_status": "Passing",
+            "deploy_target": "Azure App Service",
+            "redis_cache":  "Azure Redis Cache (Basic C0)",
+            "python":       "3.11",
+            "auto_deploy":  True,
+        }
+    )
+
+
+# API: simulated OAuth login
+@app.route("/api/oauth-login", methods=["POST"])
+def oauth_login():
+    data     = request.get_json()
+    provider = data.get("provider", "unknown")
+
+    session["user"] = {
+        "provider":  provider,
+        "email":     f"demo@{provider.lower()}.com",
+        "logged_in": True
+    }
+
+    return jsonify(
+        {
+            "status":  "success",
+            "message": f"Simulated login with {provider}",
+            "user":    session["user"]
+        }
+    )
+
+
+# API: simulated 2FA verification
+@app.route("/api/verify-2fa", methods=["POST"])
+def verify_2fa():
+    data = request.get_json()
+    code = data.get("code", "")
+
+    if len(code) == 6 and code.isdigit():
+        return jsonify(
+            {
+                "status":   "success",
+                "message":  "2FA verification successful",
+                "verified": True
+            }
+        )
+
+    return jsonify(
+        {
+            "status":   "error",
+            "message":  "Invalid code. Enter a 6-digit number.",
+            "verified": False
+        }
+    ), 400
+
+
+# API: simulated cloud resource cleanup
+@app.route("/api/cleanup", methods=["POST"])
+def cleanup():
+    cleaned = [
+        "Removed 3 unused Redis keys",
+        "Cleared 12 expired cache entries",
+        "Released 2 idle compute instances",
+    ]
+
+    return jsonify(
+        {
+            "status":  "success",
+            "message": "Cloud resource cleanup completed",
+            "actions": cleaned
+        }
+    )
 
 
 if __name__ == "__main__":

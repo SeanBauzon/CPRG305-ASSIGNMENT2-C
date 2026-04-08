@@ -8,224 +8,231 @@
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f0f2f5; color: #222; }
 
-    header { background: #2563eb; padding: 18px 32px; }
-    header h1 { color: #fff; font-size: 1.6rem; font-weight: 700; }
+    header { background: #2563eb; padding: 18px 32px; display: flex; align-items: center; justify-content: space-between; }
+    header h1 { color: #fff; font-size: 1.5rem; font-weight: 700; }
+    .header-tag { background: rgba(255,255,255,0.2); color: #fff; font-size: 0.75rem; padding: 4px 10px; border-radius: 20px; font-weight: 600; }
 
-    main { max-width: 1300px; margin: 0 auto; padding: 32px 24px; }
-    section { margin-bottom: 40px; }
-    section > h2 { font-size: 1.4rem; font-weight: 700; margin-bottom: 20px; color: #111; }
+    main { max-width: 1300px; margin: 0 auto; padding: 28px 24px; }
+    section { margin-bottom: 36px; }
+    section > h2 { font-size: 1.15rem; font-weight: 700; margin-bottom: 14px; color: #111; padding-bottom: 8px; border-bottom: 2px solid #e5e7eb; }
 
-    .chart-grid {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 18px;
+    /* KPI cards */
+    .kpi-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 12px; }
+    @media (max-width: 900px) { .kpi-grid { grid-template-columns: repeat(3, 1fr); } }
+    @media (max-width: 500px) { .kpi-grid { grid-template-columns: repeat(2, 1fr); } }
+    .kpi-card {
+      background: #fff;
+      border-radius: 10px;
+      padding: 14px 16px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.07);
+      text-align: center;
     }
+    .kpi-card .kpi-value { font-size: 1.4rem; font-weight: 800; color: #2563eb; margin-bottom: 4px; }
+    .kpi-card .kpi-label { font-size: 0.72rem; color: #666; font-weight: 500; }
+
+    /* Chart grid */
+    .chart-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
     @media (max-width: 1000px) { .chart-grid { grid-template-columns: repeat(2, 1fr); } }
     @media (max-width: 600px)  { .chart-grid { grid-template-columns: 1fr; } }
 
-    .chart-card {
-      background: #fff;
-      border-radius: 12px;
-      padding: 20px;
-      box-shadow: 0 1px 6px rgba(0,0,0,0.08);
-      display: flex;
-      flex-direction: column;
-    }
-    .chart-card h3 { font-size: 1rem; font-weight: 700; margin-bottom: 4px; }
-    .chart-card p  { font-size: 0.82rem; color: #666; margin-bottom: 12px; }
-    .chart-card img {
-      width: 100%;
-      height: auto;
-      border-radius: 6px;
-    }
+    .chart-card { background: #fff; border-radius: 10px; padding: 14px; box-shadow: 0 1px 4px rgba(0,0,0,0.07); }
+    .chart-card h3 { font-size: 0.9rem; font-weight: 700; margin-bottom: 2px; }
+    .chart-card p  { font-size: 0.74rem; color: #666; margin-bottom: 10px; }
+    .chart-card img { width: 100%; height: auto; border-radius: 6px; display: block; }
 
-    .filters-row { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
-    .filters-row input,
-    .filters-row select {
-      padding: 9px 14px;
-      border: 1px solid #d1d5db;
-      border-radius: 8px;
-      font-size: 0.9rem;
-      background: #fff;
-      color: #333;
-      outline: none;
-    }
-    .filters-row input:focus,
-    .filters-row select:focus { border-color: #2563eb; }
+    .card { background: #fff; border-radius: 10px; padding: 18px; box-shadow: 0 1px 4px rgba(0,0,0,0.07); }
 
-    .btn-row { display: flex; gap: 12px; flex-wrap: wrap; }
+    /* Filters */
+    .filters-row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+    .filters-row input, .filters-row select {
+      padding: 8px 12px; border: 1px solid #d1d5db;
+      border-radius: 8px; font-size: 0.88rem;
+      background: #fff; color: #333; outline: none;
+    }
+    .filters-row input:focus, .filters-row select:focus { border-color: #2563eb; }
+
+    /* Buttons */
+    .btn-row { display: flex; gap: 10px; flex-wrap: wrap; }
     .btn {
-      padding: 10px 22px;
-      border: none;
-      border-radius: 8px;
-      font-size: 0.95rem;
-      font-weight: 600;
-      color: #fff;
-      cursor: pointer;
-      transition: opacity 0.15s;
+      padding: 8px 18px; border: none; border-radius: 8px;
+      font-size: 0.85rem; font-weight: 600; color: #fff;
+      cursor: pointer; transition: opacity 0.15s;
     }
-    .btn:hover { opacity: 0.88; }
+    .btn:hover:not(:disabled) { opacity: 0.85; }
+    .btn:disabled { opacity: 0.45; cursor: not-allowed; }
     .btn-blue   { background: #2563eb; }
     .btn-green  { background: #16a34a; }
     .btn-purple { background: #7c3aed; }
+    .btn-red    { background: #dc2626; }
+    .btn-gray   { background: #374151; }
+    .btn-teal   { background: #0891b2; }
+    .btn-outline { background: #fff; color: #2563eb; border: 1.5px solid #2563eb; }
+    .btn-outline:hover:not(:disabled) { background: #eff6ff; opacity: 1; }
 
-    #api-response {
-      margin-top: 16px;
-      background: #1e293b;
-      color: #e2e8f0;
-      border-radius: 10px;
-      padding: 16px;
-      font-size: 0.8rem;
-      font-family: monospace;
-      white-space: pre-wrap;
-      max-height: 220px;
-      overflow-y: auto;
-      display: none;
+    /* Tables */
+    .table-wrap { margin-top: 14px; overflow-x: auto; border-radius: 10px; border: 1px solid #e5e7eb; display: none; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
+    thead { background: #1e293b; color: #fff; }
+    thead th { padding: 9px 12px; text-align: left; font-weight: 600; white-space: nowrap; }
+    tbody tr:nth-child(even) { background: #f8fafc; }
+    tbody tr:hover { background: #eff6ff; }
+    tbody td { padding: 8px 12px; border-bottom: 1px solid #e5e7eb; }
+
+    .recipe-meta { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; flex-wrap: wrap; gap: 6px; }
+    .recipe-meta span { font-size: 0.82rem; color: #555; }
+
+    /* Security grid */
+    .security-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+    @media (max-width: 600px) { .security-grid { grid-template-columns: 1fr; } }
+    .security-item { background: #f8fafc; border-radius: 8px; padding: 12px 14px; border-left: 4px solid #2563eb; }
+    .security-item .label { font-size: 0.74rem; color: #666; margin-bottom: 3px; }
+    .security-item .value { font-size: 0.88rem; font-weight: 700; }
+    .value-green { color: #16a34a; }
+    .value-blue  { color: #2563eb; }
+
+    /* Deployment status */
+    .deploy-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+    @media (max-width: 800px) { .deploy-grid { grid-template-columns: repeat(2, 1fr); } }
+    .deploy-item { background: #f8fafc; border-radius: 8px; padding: 12px 14px; border-left: 4px solid #16a34a; }
+    .deploy-item .label { font-size: 0.74rem; color: #666; margin-bottom: 3px; }
+    .deploy-item .value { font-size: 0.82rem; font-weight: 600; color: #111; }
+    .status-dot { display: inline-block; width: 8px; height: 8px; background: #16a34a; border-radius: 50%; margin-right: 5px; animation: pulse 1.5s infinite; }
+    @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
+
+    /* OAuth */
+    .oauth-field { margin-top: 14px; }
+    .oauth-field label { display: block; font-size: 0.82rem; font-weight: 600; margin-bottom: 5px; color: #374151; }
+    .oauth-field input {
+      width: 100%; max-width: 260px; padding: 8px 12px;
+      border: 1px solid #d1d5db; border-radius: 8px;
+      font-size: 0.9rem; outline: none; letter-spacing: 4px;
+    }
+    .oauth-field input:focus { border-color: #2563eb; }
+
+    .alert { margin-top: 12px; padding: 10px 14px; border-radius: 8px; font-size: 0.82rem; font-weight: 500; display: none; }
+    .alert-success { background: #dcfce7; color: #166534; border: 1px solid #bbf7d0; }
+    .alert-error   { background: #fee2e2; color: #991b1b; border: 1px solid #fecaca; }
+    .alert-info    { background: #dbeafe; color: #1e40af; border: 1px solid #bfdbfe; }
+
+    /* Cleanup */
+    .cleanup-list { margin-top: 12px; display: none; }
+    .cleanup-list li {
+      padding: 7px 12px; margin-bottom: 5px;
+      background: #f0fdf4; border-radius: 6px;
+      border-left: 3px solid #16a34a;
+      font-size: 0.82rem; color: #166534; list-style: none;
     }
 
-    .api-data h3 {
-      font-size: 1.2rem;
-      font-weight: 700;
-      margin-bottom: 12px;
-      color: #111;
-    }
-
-    .data-table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 0.9rem;
-    }
-
-    .data-table th,
-    .data-table td {
-      padding: 8px 12px;
-      text-align: left;
-      border-bottom: 1px solid #e5e7eb;
-      white-space: nowrap;
-    }
-
-    .table-wrapper {
-      overflow-x: auto;
-      margin-top: 12px;
-    }
-
-    .data-table th {
-      background: #f9fafb;
-      font-weight: 600;
-      color: #374151;
-    }
-
-    .data-table tr:hover {
-      background: #f3f4f6;
-    }
-
-    .cluster-card {
-      background: #f9fafb;
-      border-radius: 8px;
-      padding: 12px;
-      margin-bottom: 8px;
-      border-left: 4px solid #2563eb;
-    }
-
-    .cluster-card h4 {
-      font-size: 1rem;
-      font-weight: 600;
-      margin-bottom: 4px;
-      color: #111;
-    }
-
-    .cluster-card p {
-      font-size: 0.85rem;
-      color: #666;
-      margin: 2px 0;
-    }
-
-    .clusters-container {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      gap: 12px;
-    }
-
-    .pagination { display: flex; gap: 8px; justify-content: center; align-items: center; }
+    /* Pagination */
+    .pagination { display: flex; gap: 6px; justify-content: center; align-items: center; flex-wrap: wrap; }
     .page-btn {
-      width: 38px; height: 38px;
-      border: 1px solid #d1d5db;
-      border-radius: 8px;
-      background: #fff;
-      cursor: pointer;
-      font-size: 0.9rem;
-      font-weight: 500;
-      color: #333;
-      transition: all 0.15s;
+      min-width: 36px; height: 36px; padding: 0 10px;
+      border: 1px solid #d1d5db; border-radius: 8px;
+      background: #fff; cursor: pointer;
+      font-size: 0.85rem; font-weight: 500; color: #333; transition: all 0.15s;
     }
     .page-btn.active { background: #2563eb; color: #fff; border-color: #2563eb; }
-    .page-btn:hover:not(.active) { background: #f1f5f9; }
+    .page-btn:hover:not(.active):not(:disabled) { background: #f1f5f9; }
+    .page-btn:disabled { opacity: 0.4; cursor: not-allowed; }
     .page-btn-text { width: auto; padding: 0 14px; }
+    .pagination-info { font-size: 0.78rem; color: #666; text-align: center; margin-top: 6px; }
 
-    footer {
-      background: #2563eb;
-      color: #fff;
-      text-align: center;
-      padding: 18px;
-      font-size: 0.88rem;
-      margin-top: 20px;
-    }
+    footer { background: #2563eb; color: #fff; text-align: center; padding: 16px; font-size: 0.85rem; margin-top: 20px; }
 
     #toast {
-      position: fixed; bottom: 24px; right: 24px;
+      position: fixed; bottom: 20px; right: 20px;
       background: #1e293b; color: #fff;
-      padding: 12px 20px; border-radius: 10px;
-      font-size: 0.85rem; opacity: 0;
-      transition: opacity 0.3s; pointer-events: none;
-      z-index: 999;
+      padding: 10px 18px; border-radius: 10px;
+      font-size: 0.82rem; opacity: 0;
+      transition: opacity 0.3s; pointer-events: none; z-index: 999;
     }
     #toast.show { opacity: 1; }
+
+    .spinner-inline {
+      display: inline-block; width: 12px; height: 12px;
+      border: 2px solid #fff; border-top-color: transparent;
+      border-radius: 50%; animation: spin 0.6s linear infinite;
+      vertical-align: middle; margin-right: 5px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .section-2col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    @media (max-width: 700px) { .section-2col { grid-template-columns: 1fr; } }
   </style>
 </head>
 <body>
 
-<header><h1>Nutritional Insights</h1></header>
+<header>
+  <h1>Nutritional Insights</h1>
+  <span class="header-tag">Azure Cloud App</span>
+</header>
 
 <main>
 
-  <!-- Charts — images served directly from Flask/Matplotlib -->
+  <!-- Live Metrics Dashboard -->
   <section>
-    <h2>Explore Nutritional Insights</h2>
-    <div class="chart-grid">
+    <h2>📊 Metrics &amp; Monitoring</h2>
+    <div class="kpi-grid">
+      <div class="kpi-card">
+        <div class="kpi-value" id="kpi-uptime">--</div>
+        <div class="kpi-label">Uptime</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-value" id="kpi-requests">--</div>
+        <div class="kpi-label">Total Requests</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-value" id="kpi-cache-rate">--</div>
+        <div class="kpi-label">Cache Hit Rate</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-value" id="kpi-hits">--</div>
+        <div class="kpi-label">Cache Hits</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-value" id="kpi-recipes">--</div>
+        <div class="kpi-label">Total Recipes</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-value" id="kpi-diets">--</div>
+        <div class="kpi-label">Diet Types</div>
+      </div>
+    </div>
+  </section>
 
+  <!-- Charts -->
+  <section>
+    <h2>📈 Explore Nutritional Insights</h2>
+    <div class="chart-grid">
       <div class="chart-card">
         <h3>Bar Chart</h3>
         <p>Average macronutrient content by diet type.</p>
-        <img src="/chart/bar" alt="Bar Chart" />
+        <img id="barImg" src="/chart/bar" alt="Bar Chart" />
       </div>
-
       <div class="chart-card">
         <h3>Scatter Plot</h3>
         <p>Nutrient relationships (e.g., protein vs carbs).</p>
-        <img src="/chart/scatter" alt="Scatter Plot" />
+        <img id="scatterImg" src="/chart/scatter" alt="Scatter Plot" />
       </div>
-
       <div class="chart-card">
         <h3>Heatmap</h3>
         <p>Nutrient correlations.</p>
-        <img src="/chart/heatmap" alt="Heatmap" />
+        <img id="heatmapImg" src="/chart/heatmap" alt="Heatmap" />
       </div>
-
       <div class="chart-card">
         <h3>Pie Chart</h3>
         <p>Recipe distribution by diet type.</p>
-        <img src="/chart/pie" alt="Pie Chart" />
+        <img id="pieImg" src="/chart/pie" alt="Pie Chart" />
       </div>
-
     </div>
   </section>
 
   <!-- Filters -->
   <section>
-    <h2>Filters and Data Interaction</h2>
+    <h2>🔍 Filters and Data Interaction</h2>
     <div class="filters-row">
-      <input type="text" id="searchInput" placeholder="Search by Diet Type" oninput="filterDiet()" />
-      <select id="dietSelect" onchange="filterDiet()">
+      <input type="text" id="searchInput" placeholder="Search by Diet Type" oninput="handleSearch()" />
+      <select id="dietSelect" onchange="applyFilter()">
         <option value="">All Diet Types</option>
         <option value="Vegan">Vegan</option>
         <option value="Keto">Keto</option>
@@ -233,28 +240,128 @@
         <option value="Paleo">Paleo</option>
         <option value="Vegetarian">Vegetarian</option>
       </select>
+      <button class="btn btn-outline" onclick="resetFilters()">Reset</button>
     </div>
   </section>
 
-  <!-- API Interaction -->
+  <!-- API Data Interaction -->
   <section>
-    <h2>API Data Interaction</h2>
-    <div class="btn-row">
-      <button class="btn btn-blue"   onclick="fetchAPI('/api/nutritional-insights','Nutritional Insights')">Get Nutritional Insights</button>
-      <button class="btn btn-green"  onclick="fetchAPI('/api/recipes','Recipes')">Get Recipes</button>
-      <button class="btn btn-purple" onclick="fetchAPI('/api/clusters','Clusters')">Get Clusters</button>
+    <h2>🔗 API Data Interaction</h2>
+    <div class="btn-row" style="margin-bottom:14px;">
+      <button id="btn-insights" class="btn btn-blue"   onclick="loadInsights()">Get Nutritional Insights</button>
+      <button id="btn-recipes"  class="btn btn-green"  onclick="loadRecipes(1)">Get Recipes</button>
+      <button id="btn-clusters" class="btn btn-purple" onclick="loadClusters()">Get Clusters</button>
     </div>
-    <div id="api-data" class="api-data"></div>
+
+    <div id="insights-wrap" class="table-wrap">
+      <table id="insights-table"><thead><tr></tr></thead><tbody></tbody></table>
+    </div>
+
+    <div id="recipes-wrap" style="display:none;">
+      <div class="recipe-meta"><span id="recipes-meta-text"></span></div>
+      <div class="table-wrap" style="display:block;">
+        <table id="recipes-table"><thead><tr></tr></thead><tbody></tbody></table>
+      </div>
+    </div>
+
+    <div id="clusters-wrap" class="table-wrap">
+      <table id="clusters-table"><thead><tr></tr></thead><tbody></tbody></table>
+    </div>
   </section>
 
   <!-- Pagination -->
   <section>
-    <h2>Pagination</h2>
-    <div class="pagination">
-      <button class="btn page-btn page-btn-text" onclick="changePage(-1)">Previous</button>
-      <button class="btn page-btn active" id="page-1" onclick="setPage(1)">1</button>
-      <button class="btn page-btn"        id="page-2" onclick="setPage(2)">2</button>
-      <button class="btn page-btn page-btn-text" onclick="changePage(1)">Next</button>
+    <h2>📄 Pagination</h2>
+    <div class="pagination" id="pagination-btns">
+      <button class="btn page-btn page-btn-text" id="btn-prev" onclick="goPage(-1)" disabled>Previous</button>
+      <span id="page-numbers"></span>
+      <button class="btn page-btn page-btn-text" id="btn-next" onclick="goPage(1)" disabled>Next</button>
+    </div>
+    <p class="pagination-info" id="pagination-info">Showing recipes page 1</p>
+  </section>
+
+  <!-- Security & Compliance -->
+  <section>
+    <h2>🔒 Security &amp; Compliance</h2>
+    <div class="card">
+      <div class="security-grid">
+        <div class="security-item">
+          <div class="label">Encryption</div>
+          <div class="value value-green" id="sec-encryption">Loading...</div>
+        </div>
+        <div class="security-item">
+          <div class="label">Access Control</div>
+          <div class="value value-blue" id="sec-access">Loading...</div>
+        </div>
+        <div class="security-item">
+          <div class="label">Compliance</div>
+          <div class="value value-green" id="sec-compliance">Loading...</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- OAuth & 2FA -->
+  <section>
+    <h2>🔑 OAuth &amp; 2FA Integration</h2>
+    <div class="section-2col">
+      <div class="card">
+        <p style="font-size:0.88rem;font-weight:700;margin-bottom:12px;">Secure Login</p>
+        <div class="btn-row">
+          <button id="btn-google" class="btn btn-blue" onclick="oauthLogin('Google')">Login with Google</button>
+          <button id="btn-github" class="btn btn-gray" onclick="oauthLogin('GitHub')">Login with GitHub</button>
+        </div>
+        <div id="oauth-alert" class="alert"></div>
+      </div>
+      <div class="card">
+        <p style="font-size:0.88rem;font-weight:700;margin-bottom:12px;">Two-Factor Authentication</p>
+        <div class="oauth-field">
+          <label>Enter 6-Digit 2FA Code</label>
+          <input type="text" id="twofa-input" placeholder="000000" maxlength="6" />
+        </div>
+        <div style="margin-top:10px;">
+          <button id="btn-2fa" class="btn btn-green" onclick="verify2FA()">Verify 2FA</button>
+        </div>
+        <div id="twofa-alert" class="alert"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Deployment & CI/CD -->
+  <section>
+    <h2>🚀 Deployment &amp; Automation</h2>
+    <div class="card">
+      <div class="deploy-grid" id="deploy-grid">
+        <div class="deploy-item">
+          <div class="label">Pipeline</div>
+          <div class="value" id="dep-pipeline">Loading...</div>
+        </div>
+        <div class="deploy-item">
+          <div class="label">Build Status</div>
+          <div class="value" id="dep-build">Loading...</div>
+        </div>
+        <div class="deploy-item">
+          <div class="label">Deploy Target</div>
+          <div class="value" id="dep-target">Loading...</div>
+        </div>
+        <div class="deploy-item">
+          <div class="label">Redis Cache</div>
+          <div class="value" id="dep-redis">Loading...</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Cloud Resource Cleanup -->
+  <section>
+    <h2>🧹 Cloud Resource Cleanup</h2>
+    <div class="card">
+      <p style="font-size:0.82rem;color:#555;margin-bottom:14px;">
+        Efficiently manage and clean up cloud resources post deployment to reduce costs.
+      </p>
+      <button id="btn-cleanup" class="btn btn-red" onclick="runCleanup()">Clean Up Resources</button>
+      <ul id="cleanup-list" class="cleanup-list"></ul>
+      <div id="cleanup-alert" class="alert"></div>
     </div>
   </section>
 
@@ -264,163 +371,325 @@
 <div id="toast"></div>
 
 <script>
+  let isLoading   = false;
   let currentPage = 1;
-  let currentDietFilter = "";
-  let currentSearchFilter = "";
-  let lastFetchedUrl = "";
-  let lastFetchedLabel = "";
+  let totalPages  = 1;
+  let currentDiet = "";
 
-  async function fetchAPI(url, label) {
-    const dataDiv = document.getElementById("api-data");
-    dataDiv.style.display = "none";
-    dataDiv.innerHTML = `<h3>Loading ${label}...</h3>`;
-    dataDiv.style.display = "block";
+  // On load
+  window.addEventListener("load", () => {
+    loadSecurityStatus();
+    loadDeploymentStatus();
+    loadMetrics();
+    loadRecipes(1);
+    setInterval(loadMetrics, 5000); // refresh metrics every 5s
+  });
+
+  // Loading state for a single button
+  function setLoading(btnId, loading, originalText) {
+    const btn = document.getElementById(btnId);
+    if (!btn) return;
+    btn.disabled = loading;
+    btn.innerHTML = loading
+      ? `<span class="spinner-inline"></span> Loading...`
+      : originalText;
+  }
+
+  // Filters
+  function handleSearch() {
+    const val = document.getElementById("searchInput").value.trim();
+    const match = ["Vegan","Keto","Mediterranean","Paleo","Vegetarian"]
+      .find(d => d.toLowerCase().startsWith(val.toLowerCase()));
+    document.getElementById("dietSelect").value = match || "";
+    applyFilter();
+  }
+
+  function applyFilter() {
+    currentDiet = document.getElementById("dietSelect").value;
+    document.getElementById("searchInput").value = currentDiet;
+    const t = Date.now();
+    const p = currentDiet ? `?diet=${currentDiet}&t=${t}` : `?t=${t}`;
+    document.getElementById("barImg").src     = `/chart/bar${p}`;
+    document.getElementById("scatterImg").src = `/chart/scatter${p}`;
+    document.getElementById("heatmapImg").src = `/chart/heatmap${p}`;
+    document.getElementById("pieImg").src     = `/chart/pie${p}`;
+    loadRecipes(1);
+    showToast(`Filtered: ${currentDiet || "All Diet Types"}`);
+  }
+
+  function resetFilters() {
+    document.getElementById("dietSelect").value = "";
+    document.getElementById("searchInput").value = "";
+    currentDiet = "";
+    applyFilter();
+  }
+
+  // Metrics
+  async function loadMetrics() {
     try {
-      let apiUrl = url;
-      // Add diet filter to relevant endpoints
-      if (currentDietFilter && (url.includes('nutritional-insights') || url.includes('recipes'))) {
-        apiUrl += `?diet=${encodeURIComponent(currentDietFilter)}`;
-      }
-      const response = await fetch(apiUrl);
-      const data = await response.json();
-      lastFetchedUrl = url;
-      lastFetchedLabel = label;
-      displayFormattedData(data, label, url);
-      showToast(`${label} loaded ✓`);
+      const d = await (await fetch("/api/metrics")).json();
+      document.getElementById("kpi-uptime").textContent    = d.uptime;
+      document.getElementById("kpi-requests").textContent  = d.total_requests;
+      document.getElementById("kpi-cache-rate").textContent = d.cache_hit_rate;
+      document.getElementById("kpi-hits").textContent      = d.cache_hits;
+      document.getElementById("kpi-recipes").textContent   = d.total_recipes;
+      document.getElementById("kpi-diets").textContent     = d.total_diets;
+    } catch {}
+  }
+
+  // Security status
+  async function loadSecurityStatus() {
+    try {
+      const d = await (await fetch("/api/security-status")).json();
+      document.getElementById("sec-encryption").textContent = d.encryption;
+      document.getElementById("sec-access").textContent     = d.access_control;
+      document.getElementById("sec-compliance").textContent = d.compliance;
     } catch {
-      dataDiv.innerHTML = `<h3>Error loading ${label}</h3><p>Failed to fetch data.</p>`;
+      document.getElementById("sec-encryption").textContent = "Error";
     }
   }
 
-  function displayFormattedData(data, label, url) {
-    const dataDiv = document.getElementById("api-data");
-    dataDiv.innerHTML = `<h3>${label}</h3>`;
+  // Deployment status
+  async function loadDeploymentStatus() {
+    try {
+      const d = await (await fetch("/api/deployment-status")).json();
+      document.getElementById("dep-pipeline").innerHTML =
+        `<span class="status-dot"></span>${d.pipeline}`;
+      document.getElementById("dep-build").innerHTML =
+        `<span style="color:#16a34a;">✓</span> ${d.build_status}`;
+      document.getElementById("dep-target").textContent  = d.deploy_target;
+      document.getElementById("dep-redis").textContent   = d.redis_cache;
+    } catch {}
+  }
 
-    if (url.includes('nutritional-insights')) {
-      displayNutritionalInsights(data);
-    } else if (url.includes('recipes')) {
-      displayRecipes(data);
-    } else if (url.includes('clusters')) {
-      displayClusters(data);
+  // Nutritional Insights table
+  async function loadInsights() {
+    if (isLoading) return;
+    isLoading = true;
+    setLoading("btn-insights", true, "Get Nutritional Insights");
+    hideAll();
+    try {
+      const diet = currentDiet ? `?diet=${currentDiet}` : "";
+      const d = await (await fetch(`/api/nutritional-insights${diet}`)).json();
+      const rows = d.data;
+      const diets = Object.keys(rows);
+      const cols  = ["protein","carbs","fat","fiber","calories"];
+
+      document.querySelector("#insights-table thead tr").innerHTML =
+        `<th>Diet Type</th>` + cols.map(c=>`<th>${cap(c)}</th>`).join("");
+      document.querySelector("#insights-table tbody").innerHTML =
+        diets.map(diet =>
+          `<tr><td><strong>${diet}</strong></td>${
+            cols.map(c=>`<td>${rows[diet][c]?.toFixed(1)??"—"} g</td>`).join("")
+          }</tr>`
+        ).join("");
+
+      document.getElementById("insights-wrap").style.display = "block";
+      showToast(`Source: ${d.source}`);
+      loadMetrics();
+    } catch { showToast("Failed to load insights."); }
+    finally {
+      isLoading = false;
+      setLoading("btn-insights", false, "Get Nutritional Insights");
     }
   }
 
-  function applySearchFilter(data, searchField) {
-    if (!currentSearchFilter) return data;
-    return data.filter(item => 
-      item[searchField] && item[searchField].toLowerCase().includes(currentSearchFilter)
-    );
+  // Recipes table
+  async function loadRecipes(page) {
+    if (isLoading) return;
+    isLoading = true;
+    currentPage = page;
+    setLoading("btn-recipes", true, "Get Recipes");
+    hideAll();
+    try {
+      const dietParam = currentDiet ? `&diet=${currentDiet}` : "";
+      const d = await (await fetch(`/api/recipes?page=${page}&per_page=8${dietParam}`)).json();
+      totalPages = d.pages || 1;
+
+      document.getElementById("recipes-meta-text").textContent =
+        `Showing ${d.data.length} of ${d.total} recipes — Page ${d.page} of ${totalPages} | Source: ${d.source}`;
+
+      const labels = ["Food Name","Diet Type","Protein (g)","Carbs (g)","Fat (g)","Fiber (g)","Calories"];
+      document.querySelector("#recipes-table thead tr").innerHTML =
+        labels.map(l=>`<th>${l}</th>`).join("");
+      document.querySelector("#recipes-table tbody").innerHTML =
+        d.data.map(r=>
+          `<tr>
+            <td>${r.food_name}</td>
+            <td>${r.diet_type}</td>
+            <td>${r.protein?.toFixed(1)}</td>
+            <td>${r.carbs?.toFixed(1)}</td>
+            <td>${r.fat?.toFixed(1)}</td>
+            <td>${r.fiber?.toFixed(1)}</td>
+            <td>${r.calories?.toFixed(0)}</td>
+          </tr>`
+        ).join("");
+
+      document.getElementById("recipes-wrap").style.display = "block";
+      renderPagination();
+      showToast(`Source: ${d.source}`);
+      loadMetrics();
+    } catch { showToast("Failed to load recipes."); }
+    finally {
+      isLoading = false;
+      setLoading("btn-recipes", false, "Get Recipes");
+    }
   }
 
-  function displayNutritionalInsights(data) {
-    const dataDiv = document.getElementById("api-data");
-    let filteredData = data.data;
-    if (currentSearchFilter) {
-      filteredData = {};
-      for (const [diet, nutrients] of Object.entries(data.data)) {
-        if (diet.toLowerCase().includes(currentSearchFilter)) {
-          filteredData[diet] = nutrients;
-        }
+  // Clusters table
+  async function loadClusters() {
+    if (isLoading) return;
+    isLoading = true;
+    setLoading("btn-clusters", true, "Get Clusters");
+    hideAll();
+    try {
+      const d = await (await fetch("/api/clusters")).json();
+      const labels = ["Diet","Dominant Macro","Avg Protein","Avg Carbs","Avg Fat","Avg Calories","Recipes"];
+      document.querySelector("#clusters-table thead tr").innerHTML =
+        labels.map(l=>`<th>${l}</th>`).join("");
+      document.querySelector("#clusters-table tbody").innerHTML =
+        d.clusters.map(r=>
+          `<tr>
+            <td><strong>${r.diet}</strong></td>
+            <td>${cap(r.dominant_macro)}</td>
+            <td>${r.avg_protein} g</td>
+            <td>${r.avg_carbs} g</td>
+            <td>${r.avg_fat} g</td>
+            <td>${r.avg_calories} kcal</td>
+            <td>${r.recipe_count}</td>
+          </tr>`
+        ).join("");
+      document.getElementById("clusters-wrap").style.display = "block";
+      showToast(`Source: ${d.source}`);
+      loadMetrics();
+    } catch { showToast("Failed to load clusters."); }
+    finally {
+      isLoading = false;
+      setLoading("btn-clusters", false, "Get Clusters");
+    }
+  }
+
+  // Pagination
+  function renderPagination() {
+    const container = document.getElementById("page-numbers");
+    container.innerHTML = "";
+    const start = Math.max(1, currentPage - 2);
+    const end   = Math.min(totalPages, currentPage + 2);
+    for (let i = start; i <= end; i++) {
+      const btn = document.createElement("button");
+      btn.className = "page-btn" + (i === currentPage ? " active" : "");
+      btn.textContent = i;
+      btn.onclick = () => loadRecipes(i);
+      container.appendChild(btn);
+    }
+    document.getElementById("btn-prev").disabled = currentPage <= 1;
+    document.getElementById("btn-next").disabled = currentPage >= totalPages;
+    document.getElementById("pagination-info").textContent =
+      `Page ${currentPage} of ${totalPages}`;
+  }
+
+  function goPage(delta) {
+    const next = currentPage + delta;
+    if (next >= 1 && next <= totalPages) loadRecipes(next);
+  }
+
+  function hideAll() {
+    document.getElementById("insights-wrap").style.display = "none";
+    document.getElementById("recipes-wrap").style.display  = "none";
+    document.getElementById("clusters-wrap").style.display = "none";
+  }
+
+  // OAuth login
+  async function oauthLogin(provider) {
+    if (isLoading) return;
+    isLoading = true;
+    const btnId = provider === "Google" ? "btn-google" : "btn-github";
+    setLoading(btnId, true, `Login with ${provider}`);
+    showAlert("oauth-alert", "info", `Connecting to ${provider}...`);
+    try {
+      const res  = await fetch("/api/oauth-login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ provider })
+      });
+      const d = await res.json();
+      showAlert("oauth-alert", "success", `✓ Logged in as ${d.user.email}`);
+      showToast(`Logged in with ${provider} ✓`);
+    } catch {
+      showAlert("oauth-alert", "error", "Login failed. Please try again.");
+    } finally {
+      isLoading = false;
+      setLoading(btnId, false, `Login with ${provider}`);
+    }
+  }
+
+  // 2FA verification
+  async function verify2FA() {
+    if (isLoading) return;
+    const code = document.getElementById("twofa-input").value.trim();
+    if (!code) { showAlert("twofa-alert","error","Please enter a 6-digit code."); return; }
+    isLoading = true;
+    setLoading("btn-2fa", true, "Verify 2FA");
+    try {
+      const res = await fetch("/api/verify-2fa", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ code })
+      });
+      const d = await res.json();
+      if (d.verified) {
+        showAlert("twofa-alert","success","✓ 2FA verification successful!");
+        document.getElementById("twofa-input").value = "";
+      } else {
+        showAlert("twofa-alert","error","✗ " + d.message);
       }
-    }
-    
-    let html = '<div class="table-wrapper"><table class="data-table"><thead><tr><th>Diet Type</th><th>Protein (g)</th><th>Carbs (g)</th><th>Fat (g)</th><th>Fiber (g)</th><th>Calories</th></tr></thead><tbody>';
-    
-    for (const [diet, nutrients] of Object.entries(filteredData)) {
-      html += `<tr>
-        <td>${diet}</td>
-        <td>${nutrients.protein}</td>
-        <td>${nutrients.carbs}</td>
-        <td>${nutrients.fat}</td>
-        <td>${nutrients.fiber}</td>
-        <td>${nutrients.calories}</td>
-      </tr>`;
-    }
-    html += '</tbody></table></div>';
-    dataDiv.innerHTML += html;
-  }
-
-  function displayRecipes(data) {
-    const dataDiv = document.getElementById("api-data");
-    let filteredData = data.data;
-    if (currentSearchFilter) {
-      filteredData = data.data.filter(recipe => 
-        recipe.food_name.toLowerCase().includes(currentSearchFilter) ||
-        recipe.diet_type.toLowerCase().includes(currentSearchFilter)
-      );
-    }
-    
-    let html = `<p>Showing ${filteredData.length} of ${data.total} recipes (Page ${data.page} of ${data.pages})</p>`;
-    html += '<div class="table-wrapper"><table class="data-table"><thead><tr><th>Food Name</th><th>Diet Type</th><th>Protein (g)</th><th>Carbs (g)</th><th>Fat (g)</th><th>Calories</th></tr></thead><tbody>';
-    
-    filteredData.forEach(recipe => {
-      html += `<tr>
-        <td>${recipe.food_name || 'N/A'}</td>
-        <td>${recipe.diet_type}</td>
-        <td>${recipe.protein}</td>
-        <td>${recipe.carbs}</td>
-        <td>${recipe.fat}</td>
-        <td>${recipe.calories}</td>
-      </tr>`;
-    });
-    html += '</tbody></table></div>';
-    dataDiv.innerHTML += html;
-  }
-
-  function displayClusters(data) {
-    const dataDiv = document.getElementById("api-data");
-    let filteredData = data.clusters;
-    if (currentSearchFilter) {
-      filteredData = data.clusters.filter(cluster => 
-        cluster.diet.toLowerCase().includes(currentSearchFilter) ||
-        cluster.dominant_macro.toLowerCase().includes(currentSearchFilter)
-      );
-    }
-    
-    let html = '<div class="clusters-container">';
-    
-    filteredData.forEach(cluster => {
-      html += `<div class="cluster-card">
-        <h4>${cluster.diet}</h4>
-        <p><strong>Dominant Macro:</strong> ${cluster.dominant_macro}</p>
-        <p><strong>Averages:</strong> Protein: ${cluster.avg_protein}g, Carbs: ${cluster.avg_carbs}g, Fat: ${cluster.avg_fat}g</p>
-        <p><strong>Calories:</strong> ${cluster.avg_calories} | <strong>Recipes:</strong> ${cluster.recipe_count}</p>
-      </div>`;
-    });
-    html += '</div>';
-    dataDiv.innerHTML += html;
-  }
-
-  function filterDiet() {
-    const search = document.getElementById("searchInput").value.toLowerCase();
-    const select = document.getElementById("dietSelect").value;
-    
-    currentDietFilter = select;
-    currentSearchFilter = search;
-    
-    // If we have previously fetched data, refetch with new filters
-    if (lastFetchedUrl) {
-      fetchAPI(lastFetchedUrl, lastFetchedLabel);
-    } else {
-      showToast(`Filter set: "${select || "All"}" / search: "${search || "—"}"`);
+    } catch {
+      showAlert("twofa-alert","error","Verification failed.");
+    } finally {
+      isLoading = false;
+      setLoading("btn-2fa", false, "Verify 2FA");
     }
   }
 
-  function setPage(n) {
-    currentPage = n;
-    document.querySelectorAll(".page-btn[id^='page-']").forEach(b => b.classList.remove("active"));
-    document.getElementById(`page-${n}`)?.classList.add("active");
+  // Cloud cleanup
+  async function runCleanup() {
+    if (isLoading) return;
+    isLoading = true;
+    setLoading("btn-cleanup", true, "Clean Up Resources");
+    document.getElementById("cleanup-list").style.display = "none";
+    document.getElementById("cleanup-alert").style.display = "none";
+    try {
+      const d = await (await fetch("/api/cleanup", { method: "POST" })).json();
+      const list = document.getElementById("cleanup-list");
+      list.innerHTML = d.actions.map(a=>`<li>✓ ${a}</li>`).join("");
+      list.style.display = "block";
+      showAlert("cleanup-alert","success", d.message);
+      showToast("Cleanup complete ✓");
+    } catch {
+      showAlert("cleanup-alert","error","Cleanup failed.");
+    } finally {
+      isLoading = false;
+      setLoading("btn-cleanup", false, "Clean Up Resources");
+    }
   }
-  function changePage(d) {
-    const total = document.querySelectorAll(".page-btn[id^='page-']").length;
-    setPage(Math.max(1, Math.min(total, currentPage + d)));
+
+  // Helpers
+  function showAlert(id, type, msg) {
+    const el = document.getElementById(id);
+    el.className = `alert alert-${type}`;
+    el.textContent = msg;
+    el.style.display = "block";
+  }
+
+  function cap(str) {
+    return str ? str.charAt(0).toUpperCase() + str.slice(1) : "";
   }
 
   function showToast(msg) {
     const t = document.getElementById("toast");
     t.textContent = msg;
     t.classList.add("show");
-    setTimeout(() => t.classList.remove("show"), 2200);
+    setTimeout(() => t.classList.remove("show"), 2500);
   }
 </script>
 </body>
